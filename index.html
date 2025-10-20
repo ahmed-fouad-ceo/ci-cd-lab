@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Smart Campus Demo - Initial Deployment (Version 1.0)</title>
+
+  <!-- Tailwind CDN (for the lab simplicity) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    /* Small visual polish */
+    body { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg,#EFF6FF,#FEF3C7); }
+    .card { max-width: 840px; width: 95%; padding: 2rem; border-radius: 1rem; box-shadow: 0 10px 30px rgba(2,6,23,0.08); background: white; }
+    .muted { color: #6b7280; }
+    .monos { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace; }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <header class="mb-6">
+      <h1 class="text-3xl md:text-4xl font-extrabold">Smart Campus Demo - Initial Deployment (Version 1.0)</h1>
+      <p class="muted mt-1">A single-file CI/CD demo: push & watch it update on Azure Static Web Apps.</p>
+    </header>
+
+    <section class="grid gap-4 md:grid-cols-2">
+      <div>
+        <h2 class="text-xl font-semibold">What this demo shows</h2>
+        <ul class="mt-2 list-disc ml-5 muted">
+          <li>GitHub Actions triggered on <code class="monos">push</code> → GitHub Actions pipeline</li>
+          <li>Automated deployment to <strong>Azure Static Web Apps</strong></li>
+          <li>Immediate visible change on the live URL when <code class="monos">index.html</code> is updated</li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="text-xl font-semibold">Quick edit steps</h2>
+        <ol class="mt-2 ml-5 list-decimal muted">
+          <li>Edit the &lt;h1&gt; line and change the version (e.g., 1.0 → 1.1).</li>
+          <li><code class="monos">git add . &amp;&amp; git commit -m "Bump to v1.1" &amp;&amp; git push</code></li>
+          <li>Watch GitHub Actions and refresh the live site.</li>
+        </ol>
+      </div>
+    </section>
+
+    <footer class="mt-6 border-t pt-4 muted">
+      <div class="flex items-center justify-between">
+        <div>
+          <small>Deployed via: <span id="deployed-by" class="font-medium">GitHub Actions → Azure SWA</span></small>
+        </div>
+        <div class="text-sm monos" id="build-info">Build: unknown • SHA: unknown</div>
+      </div>
+      <p class="mt-3 text-xs">Tip: To show commit info or build time, we can inject environment variables during the workflow — optional enhancement for the lab.</p>
+    </footer>
+  </main>
+</body>
+</html>
