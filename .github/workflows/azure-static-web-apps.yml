@@ -17,11 +17,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # 🧩 Inject commit SHA into index.html
-      - name: Inject commit SHA into HTML
+      # 🧠 Inject commit SHA + timestamp into index.html
+      - name: Inject commit SHA and timestamp into HTML
         run: |
-          sed -i "s|<!-- COMMIT_SHA -->|Commit: ${GITHUB_SHA::7}|" index.html
-          echo "Cache-Busting applied with commit ${GITHUB_SHA::7}"
+          SHORT_SHA=${GITHUB_SHA::7}
+          DEPLOY_TIME=$(date -u +"%Y-%m-%d %H:%M UTC")
+          sed -i "s|<!-- COMMIT_SHA -->|Commit: ${SHORT_SHA} — Deployed: ${DEPLOY_TIME}|" index.html
 
       # 🚀 Deploy to Azure Static Web App
       - name: Build And Deploy
@@ -34,8 +35,3 @@ jobs:
           app_location: "/"
           api_location: ""
           output_location: "/"
-
-      # 🔧 Force CDN cache refresh after deploy
-      - name: Purge Azure CDN cache
-        run: |
-          echo "Purge CDN cache step (Azure usually refreshes automatically)"
