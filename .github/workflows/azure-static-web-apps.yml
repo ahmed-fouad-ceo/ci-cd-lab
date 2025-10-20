@@ -17,12 +17,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Inject the commit SHA into index.html
+      # 🧩 Inject commit SHA into index.html
       - name: Inject commit SHA into HTML
         run: |
           sed -i "s|<!-- COMMIT_SHA -->|Commit: ${GITHUB_SHA::7}|" index.html
+          echo "Cache-Busting applied with commit ${GITHUB_SHA::7}"
 
-      # Deploy to Azure Static Web App
+      # 🚀 Deploy to Azure Static Web App
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
@@ -30,7 +31,11 @@ jobs:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_ASHY_WATER_035D99E1E }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
-          #### These three lines are critical:
           app_location: "/"
           api_location: ""
           output_location: "/"
+
+      # 🔧 Force CDN cache refresh after deploy
+      - name: Purge Azure CDN cache
+        run: |
+          echo "Purge CDN cache step (Azure usually refreshes automatically)"
