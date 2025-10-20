@@ -11,29 +11,26 @@ on:
 
 jobs:
   build_and_deploy_job:
-    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
+    if: github.event_name == 'push' || github.event.action == 'closed'
     runs-on: ubuntu-latest
     name: Build and Deploy Job
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      # 🔧 Inject commit SHA into HTML for traceability
-      - name: Inject Commit SHA into index.html
+      # Inject the commit SHA into index.html
+      - name: Inject commit SHA into HTML
         run: |
           sed -i "s|<!-- COMMIT_SHA -->|Commit: ${GITHUB_SHA::7}|" index.html
 
+      # Deploy to Azure Static Web App
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
         with:
-          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
-          repo_token: ${{ secrets.GITHUB_TOKEN }} # Used for GitHub integrations (e.g. PR comments)
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_ASHY_WATER_035D99E1E }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
-          #### 👇 Adjust the following paths if needed ####
+          #### These three lines are critical:
           app_location: "/"
           api_location: ""
           output_location: "/"
-💡 Important:
-1.	Make sure you’ve set the AZURE_STATIC_WEB_APPS_API_TOKEN secret in your repo settings.
-2.	The sed line injects the short 7-character commit SHA into index.html.
