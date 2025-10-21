@@ -1,42 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CI/CD Lab — Azure Static Web App V!</title>
-    <style>
-      body {
-        font-family: system-ui, sans-serif;
-        background: #f5f7fa;
-        color: #222;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-      }
-      h1 {
-        font-size: 2rem;
-        margin-bottom: 0.5rem;
-      }
-      p {
-        font-size: 1.1rem;
-      }
-      footer {
-        margin-top: 2rem;
-        font-size: 0.9rem;
-        color: #555;
-      }
-    </style>
-  </head>
-  <body>
-    <h1>🚀 CI/CD Demo1__: Azure Static Web App</h1>
-    <p>This site automatically redeploys on every push to <code>main</code>.</p>
+name: Azure Static Web App CI/CD
 
-    <footer>
-      <small><!-- COMMIT_SHA --></small>
-    </footer>
-  </body>
-</html>
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
 
-Add COMMIT_SHA placeholder for CI/CD demo
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    name: Build and Deploy
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 🔹 Inject commit SHA and timestamp into index.html for verification
+      - name: Inject build info
+        run: |
+          COMMIT_SHA=${GITHUB_SHA::7}
+          BUILD_TIME=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
+          sed -i "s|<!-- COMMIT_SHA -->|Commit: $COMMIT_SHA • $BUILD_TIME|" index.html
+
+      # 🔹 Deploy to Azure Static Web Apps
+      - name: Deploy to Azure Static Web App
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          action: "upload"
+          app_location: "."
+          output_location: "."
